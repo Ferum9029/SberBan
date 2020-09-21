@@ -69,21 +69,12 @@ class MyDataBase:
     def add_server(self, server):
         id = server.guild.id
         members = []
-        jobs = server.jobs
-        roulette = server.roulette
-        goods = server.shop.goods
         self.c.execute(f'CREATE TABLE "Server{id}" (id INTEGER, balance INTEGER, job TEXT, lock INTEGER, lockpick INTEGER, securities INTEGER, have TEXT, salary INTEGER, last_salary)')
         self.c.execute(f'CREATE TABLE "Jobs{id}" (name TEXT, require TEXT, salary INTEGER, c_name TEXT)')
         self.c.execute(f'CREATE TABLE "Roulette{id}" (params TEXT)')
         self.c.execute(f'CREATE TABLE "Goods{id}" (name TEXT, c_name TEXT, price INTEGER, desc TEXT, sel_price INTEGER)')
         self.c.execute(f'CREATE TABLE "Bank{id}" (name TEXT, c_name TEXT, price INTEGER, desc TEXT, sel_price INTEGER)')
         self.c.execute('INSERT INTO servers VALUES (%s,%s)', (id, '[]'))
-        for good in goods:
-            self.add_good(id, good.name, good.c_name, good.price, good.desc, good.sell_price)
-        self.conn.commit()
-        for job in jobs:
-            self.add_job(id, job.name, job.requirement, job.salary, job.c_name)
-        self.conn.commit()
         for member in members:
             self.add_member(id, member.owner.id)
         self.conn.commit()
